@@ -141,7 +141,7 @@ ppProgram p n = case p of
     IfElse e pr1 pr2 -> (spaces n) ++ "if (" ++ ppExpr e ++ ")\n" ++ (ppProgram pr1 (n + 2)) ++ (spaces n) ++"else\n"++ (ppProgram pr2 (n + 2))
     Read i -> (spaces n) ++ "read " ++ i ++ ";\n"
     Write expr -> (spaces n) ++ "write " ++ ppExpr expr ++ ";\n"
-    Print str -> (spaces n) ++ "print " ++ str ++ ";\n"
+    Print str -> (spaces n) ++ "print \"" ++ str ++ "\""++ ";\n"
 
 block :: [Program] -> (Int -> String)
 block bl n = case bl of
