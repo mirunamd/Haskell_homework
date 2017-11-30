@@ -57,7 +57,7 @@ ppExpr e = case e of
 
   Op Sub [e1, e2] 
     | bAS e1 && bMDM e2 -> "(" ++ (ppExpr e1) ++ ")" ++ " - " ++ "(" ++ (ppExpr e2) ++ ")"
-    | bAS e1 -> "(" ++ (ppExpr e1) ++ ")" ++ " + " ++ (ppExpr e2) 
+    | bAS e1 -> "(" ++ (ppExpr e1) ++ ")" ++ " - " ++ (ppExpr e2) 
     | bMDM e2 -> (ppExpr e1) ++ " - " ++ "(" ++ (ppExpr e2) ++ ")"   
     | otherwise -> (ppExpr e1) ++ " - " ++ (ppExpr e2)   
  
