@@ -61,9 +61,9 @@ optExpr m e = case e of
                         Nothing -> e
                         Just x -> Constant x
 
-        Op Or ([e1, e2]) -> exor (optExpr m e1) (optExpr m e2) 
+        Op Or ([e1, e2]) -> ex (optExpr m e1) (optExpr m e2) "or"
 
-        Op And [e1, e2] -> exand (optExpr m e1) (optExpr m e2) 
+        Op And [e1, e2] -> ex (optExpr m e1) (optExpr m e2) "and"
          
         Op Eq [e1, e2] -> ex (optExpr m e1) (optExpr m e2) "eq"
 
@@ -93,33 +93,10 @@ toInt b
         | b = 1
         | otherwise = 0 
 
-exor :: Expr -> Expr -> Expr
-exor e1 e2 
-        | b1 && b2 =  Constant (toInt(boolean(fromConstant e1) || boolean(fromConstant e2)))
-        | b1 = if boolean(fromConstant e1) then Constant 1
-                else Op Or [e1, e2]  
-        | b2 = if boolean(fromConstant e2) then Constant 1
-                else Op Or [e1, e2]     
-        | otherwise = Op Or [e1, e2]     
-        where
-                        b1 = isConstant e1
-                        b2 = isConstant e2 
-
-exand :: Expr -> Expr -> Expr
-exand e1 e2 
-        | b1 && b2 =  Constant (toInt(boolean(fromConstant e1) || boolean(fromConstant e2)))
-        | b1 = if boolean(fromConstant e1) == False then Constant 0
-                else e2  
-        | b2 = if boolean(fromConstant e2) == False then Constant 0
-                else e1    
-        | otherwise = Op And [e1, e2]     
-        where
-                        b1 = isConstant e1
-                        b2 = isConstant e2 
-
 ex :: Expr -> Expr -> String -> Expr
 ex e1 e2 s 
         | b1 && b2 = case s of
+                "or" ->  Constant (toInt(boolean(fromConstant e1) || boolean(fromConstant e2)))
                 "and" ->  Constant (toInt(boolean(fromConstant e1) && boolean(fromConstant e2)))
                 "eq" ->  Constant (toInt(boolean(fromConstant e1) == boolean(fromConstant e2)))
                 "leq" ->  Constant (toInt((fromConstant e1) <= (fromConstant e2)))
@@ -132,6 +109,7 @@ ex e1 e2 s
                 "div" -> Constant (floor(fromInteger(fromConstant e1) / fromInteger(fromConstant e2)))
                 "mod" -> Constant ((fromConstant e1) `mod` (fromConstant e2))
         | otherwise = case s of 
+                "or" ->  Op Or [e1, e2]
                 "and" ->  Op And [e1, e2]
                 "eq" ->  Op Eq [e1, e2]
                 "leq" ->  Op Leq [e1, e2]
