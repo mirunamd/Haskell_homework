@@ -97,10 +97,8 @@ exor :: Expr -> Expr -> Expr
 exor e1 e2 
         | b1 && b2 =  Constant (toInt(boolean(fromConstant e1) || boolean(fromConstant e2)))
         | b1 = if (fromConstant e1) == 1 then Constant 1
-                else if (fromConstant e1) == 0 then e2
                 else Op Or [e1, e2]  
         | b2 = if (fromConstant e2) == 1 then Constant 1
-                else if (fromConstant e2) == 0 then e1
                 else Op Or [e1, e2]  
         | otherwise = Op Or [e1, e2]     
         where
@@ -158,23 +156,21 @@ enot e1
 
 optProgram  :: Program -> OptStorage -> (Program, OptStorage)
 
-optProgram p m  = question "optimize program"
-{-(f p m, m)
-
-f :: Program -> OptStorage -> (Program, OptStorage)
-f p m = case p of
-    i := e -> f p (optUpdate i e m)         
-    Block xs -> block xs
+optProgram p m  =  question "optimise program"
+{-case p of
+    i := e -> let m' = (optUpdate i e m)
+              in (p, m')           
+    Block xs -> block xs m
     While e pr -> (spaces n) ++ "while (" ++ ppExpr e ++ ")\n" ++ (ppProgram pr (n + 2))
     If e pr -> (spaces n) ++ "if (" ++ ppExpr e ++ ")\n" ++ (ppProgram pr (n+2))
     IfElse e pr1 pr2 -> (spaces n) ++ "if (" ++ ppExpr e ++ ")\n" ++ (ppProgram pr1 (n + 2)) ++ (spaces n) ++"else\n"++ (ppProgram pr2 (n + 2))
-    Read i -> (spaces n) ++ "read " ++ i ++ ";\n"
-    Write expr -> (spaces n) ++ "write " ++ ppExpr expr ++ ";\n"
-    Print str -> (spaces n) ++ "print \"" ++ str ++ "\""++ ";\n"
+    Read i -> (p, m)
+    Write expr -> (p, m)
+    Print str -> (p, m)
 
-block :: [Program] -> (Int -> String)
-block bl = case bl of
-    [] -> ""
+block :: [Program] -> OptStorage -> Program
+block bl m = case bl of
+    [] -> ()
     [p] -> (ppProgram p)
     (p : ps) -> (ppProgram p) ++ (block ps)
 -}
